@@ -1,0 +1,54 @@
+/* Merged Navbar Styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Add padding to body to account for fixed navbar */
+body {
+    padding-top: 56px; /* Bootstrap navbar default height */
+}
+
+.navbar .external-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar .tools-used {
+    font-size: 16px;
+    text-decoration: underline;
+    cursor: pointer;
+    color: #333;
+}
+
+.navbar .tools-used:hover {
+    color: #007bff;
+}
+
+.navbar .github-image,
+.navbar .linkedin-image {
+    width: 24px;
+    height: 24px;
+}
+
+.navbar #github-button,
+.navbar #linkedin-button {
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.navbar #github-button:hover,
+.navbar #linkedin-button:hover {
+    opacity: 0.7;
+}
+
+.navbar-brand {
+    font-size: 35px;
+}
+

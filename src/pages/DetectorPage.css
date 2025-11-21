@@ -1,0 +1,32 @@
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.webcam-container {
+  border: 13px solid #333;
+  border-radius: 4px;
+}
+
+.video-off-frame {
+  width: 640px;
+  height: 480px;
+  background-color: black;
+  border: 2px solid #333;
+  border-radius: 4px;
+}
+
+.detector-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 80px;
+}
+
+.prediction-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+}
