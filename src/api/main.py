@@ -4,18 +4,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 from PIL import Image
 import io
+import os
 
 app = FastAPI()
 
+# Get allowed origins from environment variable, default to localhost for development
+allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5175,http://localhost:5173")
+allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5175"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-model = YOLO("./predictor.pt")
+# Get model path from environment variable or use default
+model_path = os.getenv("MODEL_PATH", "./predictor.pt")
+model = YOLO(model_path)
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):

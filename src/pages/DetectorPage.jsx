@@ -39,7 +39,8 @@ function DetectorPage() {
             const formData = new FormData();
             formData.append("file", blob, "frame.jpg");
 
-            const res = await fetch("http://localhost:8000/predict", {
+            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+            const res = await fetch(`${apiUrl}/predict`, {
                 method: "POST",
                 body: formData
             });
@@ -80,7 +81,7 @@ function DetectorPage() {
                         <div className="alert alert-danger mt-3" role="alert">
                             Error: {error}
                             <br />
-                            <small>Make sure the backend server is running on http://localhost:8000</small>
+                            <small>Make sure the backend server is running</small>
                         </div>
                     )}
 
