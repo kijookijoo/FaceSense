@@ -22,14 +22,42 @@ app.add_middleware(
 
 # Get model path from environment variable or use default
 model_path = os.getenv("MODEL_PATH", "./predictor.pt")
-model = YOLO(model_path)
+model = None
+
+def get_model():
+    """Lazy load model - only load when first needed"""
+    global model
+    if model is None:
+        try:
+            model = YOLO(model_path)
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            raise
+    return model
+
+@app.get("/")
+async def root():
+    return {"message": "Backend is running!", "status": "ok"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    img_bytes = await file.read()
-    img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+    try:
+        model = get_model()  # Load model on first request
+    except Exception as e:
+        return JSONResponse(
+            {"error": f"Model loading failed: {str(e)}"},
+            status_code=500
+        )
+    
+    try:
+        img_bytes = await file.read()
+        img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
-    results = model(img)
+        results = model(img)
     
     detections = []
     for result in results:
@@ -53,8 +81,13 @@ async def predict(file: UploadFile = File(...)):
                     }
                 })
     
-    return JSONResponse({
-        "num_detections": len(detections),
-        "detections": detections,
-        "class_names": results[0].names if len(results) > 0 else {}
-    })
+        return JSONResponse({
+            "num_detections": len(detections),
+            "detections": detections,
+            "class_names": results[0].names if len(results) > 0 else {}
+        })
+    except Exception as e:
+        return JSONResponse(
+            {"error": f"Prediction failed: {str(e)}"},
+            status_code=500
+        )
