@@ -15,4 +15,4 @@ build/
 .venv
 venv/
 .DS_Store
-
+start_local.sh
