@@ -58,29 +58,29 @@ async def predict(file: UploadFile = File(...)):
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
         results = model(img)
-    
-    detections = []
-    for result in results:
-        boxes = result.boxes
         
-        if len(boxes) > 0:
-            xyxy = boxes.xyxy.cpu().numpy() 
-            conf = boxes.conf.cpu().numpy() 
-            cls = boxes.cls.cpu().numpy().astype(int)
+        detections = []
+        for result in results:
+            boxes = result.boxes
             
-            for i in range(len(boxes)):
-                detections.append({
-                    "class_index": int(cls[i]),
-                    "class_name": result.names[cls[i]],
-                    "confidence": float(conf[i]),
-                    "bbox": {
-                        "x1": float(xyxy[i][0]),
-                        "y1": float(xyxy[i][1]),
-                        "x2": float(xyxy[i][2]),
-                        "y2": float(xyxy[i][3])
-                    }
-                })
-    
+            if len(boxes) > 0:
+                xyxy = boxes.xyxy.cpu().numpy() 
+                conf = boxes.conf.cpu().numpy() 
+                cls = boxes.cls.cpu().numpy().astype(int)
+                
+                for i in range(len(boxes)):
+                    detections.append({
+                        "class_index": int(cls[i]),
+                        "class_name": result.names[cls[i]],
+                        "confidence": float(conf[i]),
+                        "bbox": {
+                            "x1": float(xyxy[i][0]),
+                            "y1": float(xyxy[i][1]),
+                            "x2": float(xyxy[i][2]),
+                            "y2": float(xyxy[i][3])
+                        }
+                    })
+        
         return JSONResponse({
             "num_detections": len(detections),
             "detections": detections,
